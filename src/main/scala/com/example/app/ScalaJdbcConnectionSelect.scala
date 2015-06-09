@@ -8,6 +8,8 @@ package com.example.app
 import java.sql.DriverManager
 import java.sql.Connection
 import scalikejdbc._
+import org.joda.time._
+
 
 object ScalaJdbcConnectionSelect {
   def main(args: Array[String]) {
@@ -55,6 +57,23 @@ object ScalaJdbcConnectionSelect {
 //
 //    val customers: List[Customer] = sql"select * from account".map(rs => Customer_obj(rs)).list.apply()
 //    customers.foreach(c => println(c.name))
+    /**
+     * insert statement
+     */
+
+    val c = User.column
+    withSQL {
+      insert.into(User).namedValues(c.name -> "Bob", c.email -> "yolo@gmail.com", c.created_at -> DateTime.now())
+    }.updateAndReturnGeneratedKey.apply()
 
   }
+
+}
+
+case class User(id: Long, name: Option[String], email: Option[String], created_at: DateTime)
+object User extends SQLSyntaxSupport[User] {
+  override val tableName = "account"
+  def apply(rs: WrappedResultSet) = new User (
+    rs.long("id"), rs.stringOpt("name"), rs.stringOpt("email"), rs.jodaDateTime("created_at")
+  )
 }

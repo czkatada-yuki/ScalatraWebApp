@@ -1,8 +1,7 @@
-<%@ val body: String %>
 <!DOCTYPE html>
 <html>
     <head><title>Scaltra Sample</title></head>
     <body>
-        <%= unescape(body) %>
+    <h1>Yolo</h1>
     </body>
 </html>

@@ -1,7 +1,17 @@
 <!DOCTYPE html>
 <html>
-    <head><title>Scaltra Sample</title></head>
+    <head>
+        <title>Scaltra Sample</title>
+    </head>
     <body>
-    <h1>Yolo</h1>
+        <form action="/json" method="post">
+            Name: <br/>
+            <input type="text" name="name">
+            <br/>
+            Email: <br/>
+            <input type="email" name="email">
+            <br/>
+            <input type="submit">
+        </form>
     </body>
 </html>

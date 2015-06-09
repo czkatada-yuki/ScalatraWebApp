@@ -4,33 +4,19 @@ import org.scalatra._
 import scalikejdbc._
 import scalate.ScalateSupport
 
-class MyScalatraServlet extends MyScalatraWebAppStack with ScalateSupport{
+class MyScalatraServlet extends MyScalatraWebAppStack with ScalateSupport {
+
 
   get("/") {
     contentType = "text/html"
-    ssp("index.ssp")
-//    <html>
-//      <body>
-//        <h1>Hello, Some World!</h1>
-//        Say <a href="hello-scalate">hello to Scalate</a>.
-//
-//      </body>
-//    </html>
+    ssp("index.ssp", "layout" -> "")
   }
 
 
   post("/json") {
+    val name = params.get("name")
+    println("name: " + name)
 
-  }
-
-  get("/hello/:name") {
-    contentType = "text/html"
-    ssp("param.ssp", "param" -> params("name"))
-//    <html>
-//      <body>
-//        <h1>Hello, {params("name")}</h1>
-//      </body>
-//    </html>
   }
 
 }

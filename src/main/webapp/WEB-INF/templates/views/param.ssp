@@ -1,5 +1,0 @@
-<%@ val param: String %>
-<h1>Scalatra POST Tutorial</h1>
-<p>You submitted: <%= param %></p>
-<hr/>
-<a href="/">Beck To Index</a>

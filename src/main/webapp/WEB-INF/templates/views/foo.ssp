@@ -1,6 +1,0 @@
-<%@ val foo: String %>
-<html>
-<body>
-    <p>Foo is <%= foo %></p>
-</body>
-</html>

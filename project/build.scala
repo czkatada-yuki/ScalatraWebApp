@@ -22,18 +22,30 @@ object MyScalatraWebAppBuild extends Build {
       scalaVersion := ScalaVersion,
       resolvers += Classpaths.typesafeReleases,
       resolvers += "Scalaz Bintray Repo" at "http://dl.bintray.com/scalaz/releases",
+      dependencyOverrides := Set(
+        "org.scala-lang" %  "scala-library"  % scalaVersion.value,
+        "org.scala-lang" %  "scala-reflect"  % scalaVersion.value,
+        "org.scala-lang" %  "scala-compiler" % scalaVersion.value
+      ),
       libraryDependencies ++= Seq(
         "org.scalatra" %% "scalatra" % ScalatraVersion,
         "org.scalatra" %% "scalatra-scalate" % ScalatraVersion,
         "org.scalatra" %% "scalatra-specs2" % ScalatraVersion % "test",
-        "ch.qos.logback" % "logback-classic" % "1.1.2" % "runtime",
-        "org.eclipse.jetty" % "jetty-webapp" % "9.1.5.v20140505" % "container",
-        "org.eclipse.jetty" % "jetty-plus" % "9.1.5.v20140505" % "container",
-        "javax.servlet" % "javax.servlet-api" % "3.1.0",
+        "org.scalatra" %% "scalatra-json" % "2.3.0",
+        "org.json4s"   %% "json4s-jackson" % "3.2.9",
         "org.scalikejdbc" %% "scalikejdbc"       % "2.2.7",
         "org.scalikejdbc" %% "scalikejdbc-test" % "2.2.7" % "test",
-        "mysql" % "mysql-connector-java" % "5.1.29",
-        "ch.qos.logback"  %  "logback-classic"   % "1.1.3"
+        "org.skinny-framework" %% "skinny-assets"             % "1.3.18",
+        "org.skinny-framework" %% "skinny-framework"          % "1.3.18",
+        "org.skinny-framework" %% "skinny-oauth2-controller"  % "1.3.18",
+        "org.skinny-framework" %% "skinny-twitter-controller" % "1.3.18",
+        "org.skinny-framework" %% "skinny-scaldi"             % "1.3.18",
+        "org.skinny-framework" %% "skinny-test"               % "1.3.18" % "test",
+        "org.eclipse.jetty" % "jetty-webapp" % "9.1.5.v20140505" % "container",
+        "org.eclipse.jetty" % "jetty-plus" % "9.1.5.v20140505" % "container",
+        "ch.qos.logback" % "logback-classic" % "1.1.2" % "runtime",
+        "javax.servlet" % "javax.servlet-api" % "3.1.0",
+        "mysql" % "mysql-connector-java" % "5.1.29"
       ),
       scalateTemplateConfig in Compile <<= (sourceDirectory in Compile){ base =>
         Seq(

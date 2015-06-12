@@ -30,24 +30,6 @@ class UserController {
     ConnectionPool.singleton(url, username, password)
   }
 
-
-  /**
-   * insert new user into DB
-   *
-   * @param name String
-   * @param email String
-   * @return
-   */
-  def insertUser(name: String, email: String) = {
-
-    if (!name.isEmpty && !email.isEmpty) {
-      val c = User.column
-      withSQL {
-        insert.into(User).namedValues(c.name -> name, c.email -> email, c.created_at -> DateTime.now)
-      }.updateAndReturnGeneratedKey.apply()
-    }
-  }
-
   /**
    * get all usernames on DB
    *
@@ -75,6 +57,23 @@ class UserController {
     getMappedUser(user)
   }
 
+  /**
+   * insert new user into DB
+   *
+   * @param name String
+   * @param email String
+   * @return
+   */
+  def insertUser(name: String, email: String) = {
+
+    if (!name.isEmpty && !email.isEmpty) {
+      val c = User.column
+      withSQL {
+        insert.into(User).namedValues(c.name -> name, c.email -> email, c.created_at -> DateTime.now)
+      }.updateAndReturnGeneratedKey.apply()
+    }
+  }
+
 
   /**
    * update user info identified by id
@@ -90,6 +89,17 @@ class UserController {
         User.column.email -> email,
         User.column.created_at -> DateTime.now
       ).where.eq(User.column.id, id)
+    }.update.apply()
+  }
+
+  /**
+   * delete user from data base identified by id
+   *
+   * @param id Int
+   */
+  def deleteUserById(id: Int) {
+    withSQL {
+      delete.from(User).where.eq(User.column.id, id)
     }.update.apply()
   }
 

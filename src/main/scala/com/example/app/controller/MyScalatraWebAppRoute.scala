@@ -50,24 +50,21 @@ class MyScalatraWebAppRoute extends ScalatraServlet with ScalateSupport with Jac
    */
   post("/users") {
     userController.insertUser(params("name"), params("email"))
-    redirect("/users")
   }
 
   /**
    * update a preexisting user by id
    */
   put("/users/:id") {
-    println("update")
     userController.updateUserById(params("id").toInt, params("name"), params("email"))
-    redirect("/users")
   }
 
   /**
    * delete a preexisting user by id
    */
-  delete("users/:id") {
-    println("delete")
-
+  delete("/users/:id") {
+    userController.deleteUserById(params("id").toInt)
   }
+
 
 }

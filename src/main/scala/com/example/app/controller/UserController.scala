@@ -2,6 +2,7 @@ package com.example.app.controller
 
 import java.sql.Connection
 
+import com.example.app.helper.ccToMap
 import com.example.app.model.User
 import org.joda.time.DateTime
 import scalikejdbc._
@@ -14,6 +15,7 @@ class UserController {
   val url = "jdbc:mysql://localhost/dev_mywebapp"
   val username = "root"
   val password = "root"
+  val created_at = "created_at"
 
   implicit val session = AutoSession
   var connection: Connection = null
@@ -23,7 +25,7 @@ class UserController {
    * default driver is MySQL
    * @param driver String
    */
-  private def establishConnectionPool(driver: String = "com.mysql.jdbc.Driver"): Unit = {
+  def establishConnectionPool(driver: String = "com.mysql.jdbc.Driver"): Unit = {
     Class.forName(driver)
     ConnectionPool.singleton(url, username, password)
   }
@@ -38,8 +40,6 @@ class UserController {
    */
   def insertUser(name: String, email: String) = {
 
-    establishConnectionPool()
-
     val c = User.column
     withSQL {
       insert.into(User).namedValues(c.name -> name, c.email -> email, c.created_at -> DateTime.now)
@@ -52,14 +52,51 @@ class UserController {
    *
    * @return users List[Option[String]]
    */
-  def selectAllUserName: List[Option[String]] = {
-    establishConnectionPool()
+  def selectAllUsers: List[Map[String, Any]] = {
 
     val u = User.syntax("u")
-    val users = withSQL { select.from(User as u) }.map(rs => rs.stringOpt(u.resultName.name)).list.apply()
+    val users = withSQL { select.from(User as u) }.map(User(u.resultName)).list.apply()
+    val mappedUsers: List[Map[String, Any]] = users.map(u => ccToMap.apply(u)).map(u => u + (created_at -> u.get(created_at).get.toString))
 
-    return users
+    mappedUsers
   }
 
 
+  /**
+   * get user identified by id
+   *
+   * @param id Int
+   * @return Option[User]
+   */
+  def selectUserById(id: Int): Map[String, Any] = {
+
+    val u = User.syntax("u")
+    val user = withSQL { select.from(User as u).where.eq(u.id, id)}.map(User(u.resultName)).single.apply()
+    getMappedUser(user)
+  }
+
+
+  /**
+   * update user info identified by id
+   *
+   * @param id Int
+   * @param name String
+   * @param email String
+   */
+  def updateUserById(id: Int, name: String, email: String) {
+    withSQL {
+      update(User).set(
+        User.column.name -> name,
+        User.column.email -> email,
+        User.column.created_at -> DateTime.now
+      ).where.eq(User.column.id, id)
+    }.update.apply()
+  }
+
+
+  private def getMappedUser(user: Option[User]): Map[String, Any] = {
+    var mappedUser: Map[String, Any] = ccToMap.apply(user.get)
+    mappedUser = mappedUser + (created_at -> mappedUser.get(created_at).get.toString)
+    mappedUser
+  }
 }

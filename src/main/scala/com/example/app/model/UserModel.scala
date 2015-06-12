@@ -16,4 +16,5 @@ object User extends SQLSyntaxSupport[User] {
   def apply(u: ResultName[User])(rs: WrappedResultSet) = new User (
     rs.long(u.id), rs.stringOpt(u.name), rs.stringOpt(u.email), rs.jodaDateTime(u.created_at)
   )
+
 }

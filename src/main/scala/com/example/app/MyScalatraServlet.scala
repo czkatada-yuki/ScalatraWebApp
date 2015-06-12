@@ -12,7 +12,7 @@ class MyScalatraServlet extends MyScalatraWebAppStack with ScalateSupport {
   }
 
 
-  post("/json") {
+  post("/demo") {
     val name = params.get("name")
     val email = params.get("email")
 

@@ -57,21 +57,17 @@ class MyScalatraWebAppRoute extends ScalatraServlet with ScalateSupport with Jac
    * update a preexisting user by id
    */
   put("/users/:id") {
-
+    println("update")
+    userController.updateUserById(params("id").toInt, params("name"), params("email"))
+    redirect("/users")
   }
 
   /**
    * delete a preexisting user by id
    */
   delete("users/:id") {
+    println("delete")
 
   }
 
-  /**
-   * show custom HTML content when 404
-   */
-  notFound {
-    contentType = "text/html"
-    <h1>WEB PAGE NOT FOUND!!</h1>
-  }
 }

@@ -40,12 +40,13 @@ class UserController {
    */
   def insertUser(name: String, email: String) = {
 
-    val c = User.column
-    withSQL {
-      insert.into(User).namedValues(c.name -> name, c.email -> email, c.created_at -> DateTime.now)
-    }.updateAndReturnGeneratedKey.apply()
+    if (!name.isEmpty && !email.isEmpty) {
+      val c = User.column
+      withSQL {
+        insert.into(User).namedValues(c.name -> name, c.email -> email, c.created_at -> DateTime.now)
+      }.updateAndReturnGeneratedKey.apply()
+    }
   }
-
 
   /**
    * get all usernames on DB
@@ -57,7 +58,6 @@ class UserController {
     val u = User.syntax("u")
     val users = withSQL { select.from(User as u) }.map(User(u.resultName)).list.apply()
     val mappedUsers: List[Map[String, Any]] = users.map(u => ccToMap.apply(u)).map(u => u + (created_at -> u.get(created_at).get.toString))
-
     mappedUsers
   }
 
@@ -93,7 +93,12 @@ class UserController {
     }.update.apply()
   }
 
-
+  /**
+   * convert case class User to Map format User w/ convert joda time to string
+   *
+   * @param user User
+   * @return Map[String, Any]
+   */
   private def getMappedUser(user: Option[User]): Map[String, Any] = {
     var mappedUser: Map[String, Any] = ccToMap.apply(user.get)
     mappedUser = mappedUser + (created_at -> mappedUser.get(created_at).get.toString)

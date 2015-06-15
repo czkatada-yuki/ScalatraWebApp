@@ -12,9 +12,9 @@ import scalikejdbc._
  */
 class UserController {
 
-  val url = "jdbc:mysql://localhost/dev_mywebapp"
-  val username = "root"
-  val password = "root"
+  val url = "jdbc:mysql://localhost/scala_webapi"
+  val username = "guest"
+  val password = "pass"
   val created_at = "created_at"
 
   implicit val session = AutoSession

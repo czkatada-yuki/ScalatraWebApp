@@ -61,8 +61,6 @@ class UserController {
     }
 
     None
-//
-//    Option(getMappedUser(user))
   }
 
   /**
@@ -101,7 +99,6 @@ class UserController {
       ).where.eq(User.column.id, id)
     }.update.apply()
 
-    1
   }
 
   /**
@@ -109,14 +106,13 @@ class UserController {
    *
    * @param id Int
    */
-  def deleteUserById(id: Int) {
+  def deleteUserById(id: Int): Int = {
     if(selectUserById(id).isEmpty) return 0
 
     withSQL {
       delete.from(User).where.eq(User.column.id, id)
     }.update.apply()
 
-    1
   }
 
   /**

@@ -42,7 +42,13 @@ class MyScalatraWebAppRoute extends ScalatraServlet with ScalateSupport with Jac
    * show single user data in JSON format
    */
   get("/users/:id") {
-    userController.selectUserById(params("id").toInt)
+
+    val result = userController.selectUserById(params("id").toInt)
+
+    result match {
+      case None => NotFound("sorry, the id could not be found")
+      case _ => Ok(result)
+    }
   }
 
   /**
@@ -56,14 +62,24 @@ class MyScalatraWebAppRoute extends ScalatraServlet with ScalateSupport with Jac
    * update a preexisting user by id
    */
   put("/users/:id") {
-    userController.updateUserById(params("id").toInt, params("name"), params("email"))
+    val isFound = userController.updateUserById(params("id").toInt, params("name"), params("email"))
+
+    isFound match {
+      case 0 => NotFound("sorry, the id could not be found")
+      case 1 => Ok("successfully inserted into database")
+    }
   }
 
   /**
    * delete a preexisting user by id
    */
   delete("/users/:id") {
-    userController.deleteUserById(params("id").toInt)
+    val isFound = userController.deleteUserById(params("id").toInt)
+
+    isFound match {
+      case 0 => NotFound("sorry, the id could not be found")
+      case 1 => Ok("successfully deleted the data")
+    }
   }
 
 

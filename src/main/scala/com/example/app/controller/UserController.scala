@@ -50,11 +50,19 @@ class UserController {
    * @param id Int
    * @return Option[User]
    */
-  def selectUserById(id: Int): Map[String, Any] = {
+  def selectUserById(id: Int): Option[Map[String, Any]] = {
 
     val u = User.syntax("u")
     val user = withSQL { select.from(User as u).where.eq(u.id, id)}.map(User(u.resultName)).single.apply()
-    getMappedUser(user)
+
+    user match {
+      case None => return None
+      case Some(_) => return Option(getMappedUser(user))
+    }
+
+    None
+//
+//    Option(getMappedUser(user))
   }
 
   /**
@@ -82,7 +90,9 @@ class UserController {
    * @param name String
    * @param email String
    */
-  def updateUserById(id: Int, name: String, email: String) {
+  def updateUserById(id: Int, name: String, email: String): Int = {
+    if(selectUserById(id).isEmpty) return 0
+
     withSQL {
       update(User).set(
         User.column.name -> name,
@@ -90,6 +100,8 @@ class UserController {
         User.column.created_at -> DateTime.now
       ).where.eq(User.column.id, id)
     }.update.apply()
+
+    1
   }
 
   /**
@@ -98,9 +110,13 @@ class UserController {
    * @param id Int
    */
   def deleteUserById(id: Int) {
+    if(selectUserById(id).isEmpty) return 0
+
     withSQL {
       delete.from(User).where.eq(User.column.id, id)
     }.update.apply()
+
+    1
   }
 
   /**
@@ -109,8 +125,8 @@ class UserController {
    * @param user User
    * @return Map[String, Any]
    */
-  private def getMappedUser(user: Option[User]): Map[String, Any] = {
-    var mappedUser: Map[String, Any] = ccToMap.apply(user.get)
+  private def getMappedUser(user: Option[User]) = {
+    var mappedUser = ccToMap.apply(user.get)
     mappedUser = mappedUser + (created_at -> mappedUser.get(created_at).get.toString)
     mappedUser
   }
